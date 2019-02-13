@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <a href="/">Главная</a>
+            </div>
+            <div class="col-md-4">
+                <a href="/change">Изменить</a>
+            </div>
+            <div class="col-md-4">
+                <a href="/statistic">Статистика</a>
+            </div>
+        </div>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ add_form.title_field.label_tag }}{{ add_form.title_field }}
+        {{ add_form.text_field.label_tag }}{{ add_form.text_field }}
+        {{ add_form.status.label_tag }}{{ add_form.status }}
+        {{ add_form.priority.label_tag }}{{ add_form.priority }}
+        {{ add_form.create_date.label_tag }}{{ add_form.create_date }}
+        {{ add_form.expiration_date.label_tag }}{{ add_form.expiration_date }}
+        <input type="submit" value="Добавить" name="_add"/>
+    </form>
+
+    {% for form in chn_form %}
+        <details>
+            <summary>
+                {{ form.title_field.initial }}
+            </summary>
+                <form method="post">
+                    {% csrf_token %}
+
+                    {{ form.title_field.label_tag }}{{ form.title_field }}
+                    {{ form.text_field.label_tag }}{{ form.text_field }}
+                    {{ form.status.label_tag }}{{ form.status }}
+                    {{ form.priority.label_tag }}{{ form.priority }}
+                    {{ form.create_date.label_tag }}{{ form.create_date }}
+                    {{ form.expiration_date.label_tag }}{{ form.expiration_date }}
+                    <input type="submit" value="Удалить" name="_del"/>
+                    <input type="submit" value="Изменить" name="_chn"/>
+                    <span id="sukableat">{{ form.id_field }}</span>
+                </form>
+        </details>
+    {% endfor %}
+</body>
+</html>

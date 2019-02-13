@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+{#    <div>#}
+{#        <h1>{{ user.get_username }}</h1>#}
+{#    </div>#}
+{#    <div>#}
+{#        <h1><a href="/">Django huerls Blog</a></h1>#}
+{#    </div>#}
+{#    {% for post in posts %}#}
+{#        <div>#}
+{#            <h2><a href="">{{ post.title }}</a></h2>#}
+{#            <h3>{{ post.text|linebreaksbr }}</h3>#}
+{#            <p>published: {{ post.published_date }}</p>#}
+{#            <p>author: {{ post.author }}</p>#}
+{#        </div>#}
+{#    {% endfor %}#}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <a href="/">Главная</a>
+            </div>
+            <div class="col-md-4">
+                <a href="/change">Изменить</a>
+            </div>
+            <div class="col-md-4">
+                <a href="/statistic">Статистика</a>
+            </div>
+        </div>
+    </div>
+
+
+    <div>
+        {% if user.get_username %}
+            <div>
+                <h1>{{ user.get_username }}</h1>
+                <a href="logout/">logout</a>
+            </div>
+            {% for task in tasks %}
+               <div>
+                   <h1><a href="">{{ task.title }}</a></h1>
+                   <h3>{{ task.text|linebreaksbr }}</h3>
+                   <p>status: {{ task.status }}</p>
+                   <p>priority: {{ task.priority }}</p>
+                   <p>expiration date: {{ task.expiration_date }}</p>
+                   <p>author: {{ task.author }}</p>
+                   {{ task.id }}
+                </div>
+            {% endfor %}
+        {% else %}
+            <div>
+                <p>авторизуйся</p>
+
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit">Войти</button>
+  </form>
+
+                <a href="signup/">htubcnhfwbz</a>
+
+            </div>
+        {% endif %}
+    </div>
+
+</body>
+</html>
