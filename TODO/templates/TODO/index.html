@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
+
 {#    <div>#}
 {#        <h1>{{ user.get_username }}</h1>#}
 {#    </div>#}
@@ -25,52 +26,100 @@
 {#    {% endfor %}#}
     <div class="container">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <a href="/">Главная</a>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <a href="/change">Изменить</a>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <a href="/statistic">Статистика</a>
+            </div>
+            <div class="col-md-3">
+                {% if user.get_username %}
+                    {{ user.get_username }}  <a href="/logout">X</a>
+                {% endif %}
             </div>
         </div>
     </div>
 
 
-    <div>
-        {% if user.get_username %}
-            <div>
-                <h1>{{ user.get_username }}</h1>
-                <a href="logout/">logout</a>
-            </div>
-            {% for task in tasks %}
-               <div>
-                   <h1><a href="">{{ task.title }}</a></h1>
+    {% if user.get_username %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h1>Не завершено</h1>
+                {% for task in tasks1 %}
+                <div>
+                   <h2><a href="">{{ task.title }}</a></h2>
                    <h3>{{ task.text|linebreaksbr }}</h3>
                    <p>status: {{ task.status }}</p>
                    <p>priority: {{ task.priority }}</p>
                    <p>expiration date: {{ task.expiration_date }}</p>
                    <p>author: {{ task.author }}</p>
-                   {{ task.id }}
+{#                   {{ task.id }}#}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="col-md-4">
+                <h1>Выполнено</h1>
+                {% for task in tasks2 %}
+                <div>
+                   <h2><a href="">{{ task.title }}</a></h2>
+                   <h3>{{ task.text|linebreaksbr }}</h3>
+                   <p>status: {{ task.status }}</p>
+                   <p>priority: {{ task.priority }}</p>
+                   <p>expiration date: {{ task.expiration_date }}</p>
+                   <p>author: {{ task.author }}</p>
+{#                   {{ task.id }}#}
                 </div>
             {% endfor %}
-        {% else %}
-            <div>
-                <p>авторизуйся</p>
-
-
-  <form method="post">
-    {% csrf_token %}
-    {{ form }}
-    <button type="submit">Войти</button>
-  </form>
-
-                <a href="signup/">htubcnhfwbz</a>
-
             </div>
-        {% endif %}
+            <div class="col-md-4">
+                <h1>Провалено</h1>
+                {% for task in tasks3 %}
+                <div>
+                   <h2><a href="">{{ task.title }}</a></h2>
+                   <h3>{{ task.text|linebreaksbr }}</h3>
+                   <p>status: {{ task.status }}</p>
+                   <p>priority: {{ task.priority }}</p>
+                   <p>expiration date: {{ task.expiration_date }}</p>
+                   <p>author: {{ task.author }}</p>
+{#                   {{ task.id }}#}
+                </div>
+            {% endfor %}
+            </div>
+        </div>
     </div>
+    {% else %}
+    <div>
+            {% block title %}Вход{% endblock %}
+            {% block content %}
+                <h2>Войдите</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit">Войти</button>
+                </form>
+            {% endblock %}
+    </div>
+    {% endif %}
+
+{#            <div>#}
+{#                <p>авторизуйся</p>#}
+{##}
+{##}
+{#  <form method="post">#}
+{#    {% csrf_token %}#}
+{#    {{ form }}#}
+{#    <button type="submit">Войти</button>#}
+{#  </form>#}
+{##}
+{#                <a href="signup/">htubcnhfwbz</a>#}
+{##}
+{#            </div>#}
+{#        {% endif %}#}
+{#    </div>#}
 
 </body>
 </html>

@@ -1,6 +1,10 @@
-h1 a {
+h2 a {
     color: #fc564e;
 }
 #sukableat{
     visibility: hidden;
+}
+
+h1 {
+    color: #fc3b99;
 }

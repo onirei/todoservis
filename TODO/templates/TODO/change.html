@@ -12,48 +12,70 @@
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <a href="/">Главная</a>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <a href="/change">Изменить</a>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <a href="/statistic">Статистика</a>
+            </div>
+            <div class="col-md-3">
+                {% if user.get_username %}
+                    {{ user.get_username }}  <a href="/logout">X</a>
+                {% endif %}
             </div>
         </div>
     </div>
 
-    <form method="post">
-        {% csrf_token %}
-        {{ add_form.title_field.label_tag }}{{ add_form.title_field }}
-        {{ add_form.text_field.label_tag }}{{ add_form.text_field }}
-        {{ add_form.status.label_tag }}{{ add_form.status }}
-        {{ add_form.priority.label_tag }}{{ add_form.priority }}
-        {{ add_form.create_date.label_tag }}{{ add_form.create_date }}
-        {{ add_form.expiration_date.label_tag }}{{ add_form.expiration_date }}
-        <input type="submit" value="Добавить" name="_add"/>
-    </form>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-push-1">
+            <form method="post">
+                {% csrf_token %}
+                {{ add_form.title_field.label_tag }}{{ add_form.title_field }}
+                {{ add_form.text_field.label_tag }}{{ add_form.text_field }}
+                {{ add_form.status.label_tag }}{{ add_form.status }}
+                {{ add_form.priority.label_tag }}{{ add_form.priority }}
+                <br>
+                {{ add_form.create_date.label_tag }}{{ add_form.create_date }}
+                {{ add_form.expiration_date.label_tag }}{{ add_form.expiration_date }}
+                <br>
+                <input type="submit" value="Добавить" name="_add"/>
+            </form>
+            </div>
+        </div>
+    </div>
 
-    {% for form in chn_form %}
-        <details>
-            <summary>
-                {{ form.title_field.initial }}
-            </summary>
-                <form method="post">
-                    {% csrf_token %}
+    <br>
 
-                    {{ form.title_field.label_tag }}{{ form.title_field }}
-                    {{ form.text_field.label_tag }}{{ form.text_field }}
-                    {{ form.status.label_tag }}{{ form.status }}
-                    {{ form.priority.label_tag }}{{ form.priority }}
-                    {{ form.create_date.label_tag }}{{ form.create_date }}
-                    {{ form.expiration_date.label_tag }}{{ form.expiration_date }}
-                    <input type="submit" value="Удалить" name="_del"/>
-                    <input type="submit" value="Изменить" name="_chn"/>
-                    <span id="sukableat">{{ form.id_field }}</span>
-                </form>
-        </details>
-    {% endfor %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-push-1">
+            {% for form in chn_form %}
+                <details>
+                    <summary>
+                        {{ form.title_field.initial }}
+                    </summary>
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ form.title_field.label_tag }}{{ form.title_field }}
+                            {{ form.text_field.label_tag }}{{ form.text_field }}
+                            {{ form.status.label_tag }}{{ form.status }}
+                            {{ form.priority.label_tag }}{{ form.priority }}
+                            <br>
+                            {{ form.create_date.label_tag }}{{ form.create_date }}
+                            {{ form.expiration_date.label_tag }}{{ form.expiration_date }}
+                            <br>
+                            <input type="submit" value="Удалить" name="_del"/>
+                            <input type="submit" value="Изменить" name="_chn"/>
+                            <span id="sukableat">{{ form.id_field }}</span>
+                        </form>
+                </details>
+            {% endfor %}
+            </div>
+        </div>
+    </div>
 </body>
 </html>

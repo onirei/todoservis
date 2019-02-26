@@ -11,20 +11,43 @@
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <a href="/">Главная</a>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <a href="/change">Изменить</a>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <a href="/statistic">Статистика</a>
+            </div>
+            <div class="col-md-3">
+                {% if user.get_username %}
+                    {{ user.get_username }}  <a href="/logout">X</a>
+                {% endif %}
             </div>
         </div>
     </div>
 
-    <div>
-        <p>sdfghjkjhgfdsasdfghn</p>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-5">
+                <img src="../../static/img/domains.png"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3">
+                <p>Среднее время на задачу: {{ data }}</p>
+                <p> Незавершённых задач {{ stata.0 }}</p>
+                <p> Завершённых задач {{ stata.1 }}</p>
+                <p> Проваленных задач {{ stata.2 }}</p>
+            </div>
+            <div class="col-lg-4">
+                <img src="../../static/img/pie.png"/>
+            </div>
+            <div class="col-lg-3">
+                <img src="../../static/img/pie2.png"/>
+            </div>
+        </div>
     </div>
 </body>
 </html>

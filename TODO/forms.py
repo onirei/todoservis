@@ -4,6 +4,9 @@ from django.db import models
 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import AuthenticationForm
+
+
 
 
 class ChangeTask(forms.Form):
@@ -29,3 +32,11 @@ class SignUpForm(UserCreationForm):
 class LoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
+
+# class LoginForm(AuthenticationForm):
+#
+#     class Meta:
+#         model = User
+#         fields = ('username', 'password', )
+
+
