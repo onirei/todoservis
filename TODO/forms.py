@@ -8,7 +8,7 @@ from django.contrib.auth.forms import AuthenticationForm
 
 
 
-
+#дублируем поля из модели
 class ChangeTask(forms.Form):
     id_field = forms.Field(required=False)
     author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
@@ -21,7 +21,7 @@ class ChangeTask(forms.Form):
     create_date = forms.DateTimeField(label='create date', initial=timezone.now)
     expiration_date = forms.DateTimeField(label='expiration date', initial=timezone.now)
 
-
+#дополним форму мылом, потом прикручу верификацию
 class SignUpForm(UserCreationForm):
     email = forms.EmailField(max_length=254, help_text='Это поле обязательно')
 
@@ -29,14 +29,11 @@ class SignUpForm(UserCreationForm):
         model = User
         fields = ('username', 'email', 'password1', 'password2', )
 
+#стандартная форма не работала, сделал свою
 class LoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
 
-# class LoginForm(AuthenticationForm):
-#
-#     class Meta:
-#         model = User
-#         fields = ('username', 'password', )
+
 
 

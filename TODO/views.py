@@ -1,32 +1,23 @@
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.http import HttpResponseRedirect
-from django.http import HttpResponse
 from .models import Task
 from .forms import ChangeTask, SignUpForm, LoginForm
-
 from django.contrib.auth import login, logout, authenticate
-
 import pandas as pd
 import numpy as np
-import io
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 
-
-# Create your views here.
-
-# def post_list(request):
-#     posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
-#     return render(request, 'blog/post_list.html', {'posts': posts})
-
 def task_list(request):
+    #вывод в три колонки по пользователю если авторизован
     if request.user.is_authenticated:
         tasks1 = Task.objects.filter(create_date__lte=timezone.now()).order_by('create_date').filter(author=request.user).filter(status='не завершено')
         tasks2 = Task.objects.filter(create_date__lte=timezone.now()).order_by('create_date').filter(author=request.user).filter(status='выполнено')
         tasks3 = Task.objects.filter(create_date__lte=timezone.now()).order_by('create_date').filter(author=request.user).filter(status='провалено')
         return render(request, 'TODO/index.html', {'tasks1': tasks1, 'tasks2': tasks2, 'tasks3': tasks3})
+    # форма входа
     else:
         if request.method == 'POST':
             form = LoginForm(request.POST)
@@ -41,36 +32,14 @@ def task_list(request):
         else:
             form = LoginForm()
         return render(request, 'TODO/index.html', {'form': form})
-    # if request.method == 'POST':
-    #     form = AuthenticationForm(request.POST)
-    #     if form.is_valid():
-    #         username = request.POST['username']
-    #         my_password = request.POST['password']
-    #         user = authenticate(username=username, password=my_password)
-    #         if user is not None:
-    #             if user.is_active:
-    #                 login(request, user)
-    #         return redirect('/')
-    # else:
-    #     form = AuthenticationForm()
-    # return render(request, 'TODO/index.html', {'form': form})
 
-
-
-    # # username = None
-    # if request.user.is_authenticated:
-    #     # username = request.user.username
-    #     tasks = Task.objects.filter(expiration_date=timezone.now()).order_by('expiration_date')
-    #     return render(request, 'TODO/index.html', {'tasks': tasks})
-    # else:
-    #     tasks = Task.objects.filter(expiration_date=timezone.now()).order_by('expiration_date')
-    #     return render(request, 'TODO/index.html', {'tasks': tasks})
 
 def change(request):
     if request.user.is_authenticated:
         if request.POST:
             add_form = ChangeTask(request.POST)
             chn_form = ChangeTask(request.POST)
+            # добавление новой записи
             if add_form.is_valid() and '_add' in request.POST:
                 author = request.user
                 title = add_form.cleaned_data['title_field']
@@ -83,10 +52,12 @@ def change(request):
                                 create_date=create_date, expiration_date=expiration_date)
                 task_obj.save()
                 return HttpResponseRedirect('/')
+            #удаление записи
             elif chn_form.is_valid() and '_del' in request.POST:
                 task_obj = Task.objects.get(id=chn_form.cleaned_data['id_field'])
                 task_obj.delete()
                 return HttpResponseRedirect('/')
+            #редактирование существующей
             elif chn_form.is_valid() and '_chn' in request.POST:
                 task_obj = Task.objects.get(id=chn_form.cleaned_data['id_field'])
                 task_obj.title = chn_form.cleaned_data['title_field']
@@ -99,9 +70,11 @@ def change(request):
                 return HttpResponseRedirect('/')
         else:
             add_form = ChangeTask()
+            #получаем все записи пользователя
             tasks = Task.objects.filter(create_date__lte=timezone.now()).order_by('-create_date').filter(
                 author=request.user)
             chn_form = ()
+            #создаём массив форм с данными поумолчанию для редактирования, хотя стоило бы использовать фабрику форм
             for task in tasks:
                 chn_form += (ChangeTask(initial={'id_field': task.id, 'title_field': task.title, 'text_field': task.text,
                                               'status': task.status, 'priority': task.priority,
@@ -121,32 +94,17 @@ def statistic(request):
         df = pd.DataFrame(list(Task.objects.all().filter(author=request.user).values_list()),
                           columns=['id', 'author', 'title', 'text', 'status', 'priority', 'create_date',
                                    'expiration_date']).set_index(['id'])
+        #для отладки датафрейм
         # df.to_csv('TODO/data.csv')
 
-        # stata = Task.objects.filter(create_date__lte=timezone.now()).order_by('-create_date').filter(author=request.user)
-        data = 'sdfgh'
-
-
-        # df['expiration_date'] = pd.to_datetime(df['expiration_date']).dt.tz_convert('Europe/Moscow')
-        # data = df
-        # ts_utc = df.tz_convert("UTC")
-        # ts_utc.index.tz = None
-
-        # data = df['create_date'].values
-        # data = [data[3],data[1],data[3] - data[1]]
-        # data = pd.to_datetime(data[3] - data[1])
-        # data = df[(df.expiration_date == data[3])]
+        #подсчёт среднего времени на задачу
         data = []
         for index, row in df.iterrows():
             data.append(row['expiration_date'] - row['create_date'])
 
         data = np.mean(data)
 
-
-
-
-
-        # df['expiration_date'] = pd.to_datetime(df['expiration_date'])
+        #линейный график задач
         dates = df['expiration_date'].values
         a = []
         b = []
@@ -170,6 +128,7 @@ def statistic(request):
         plt.legend(loc='upper left', frameon=False)
         fig.savefig('TODO/static/img/domains.png')
 
+        #диаграмма соотношения выполненых задак к проваленным
         data_names = ['выполнено', 'провалено']
         data_values = [df['status'][(df.priority == 'низкий')].count(),
                        df['status'][(df.priority == 'обычный')].count()]
@@ -185,6 +144,7 @@ def statistic(request):
             loc='upper center', labels=data_names)
         fig.savefig('TODO/static/img/pie2.png')
 
+        #диаграмма соотношения задач по приоритету
         data_names = ['низкий', 'обычный', 'высокий']
         data_values = [df['priority'][(df.priority == 'низкий')].count(),
                        df['priority'][(df.priority == 'обычный')].count(),
@@ -193,7 +153,6 @@ def statistic(request):
         fig = plt.figure(dpi=dpi, figsize=(400 / dpi, 384 / dpi))
         mpl.rcParams.update({'font.size': 9})
         plt.title('Диаграмма приоритетов задач (%)')
-        # xs = range(len(data_names))
         plt.pie(
             data_values, autopct='%1.2f%%', radius=1.1,
             explode=[0.02, 0.02, 0.02])
@@ -202,13 +161,7 @@ def statistic(request):
             loc='lower center', labels=data_names)
         fig.savefig('TODO/static/img/pie.png')
 
-        """
-        добавить среднее время выполнения задания, только выполненых
-        соотношение успешных к проваленным, можно диаграммой (процент успеха)
-        всего активных заданий, выполненых, проваленных
-        
-        """
-
+        #подсчёт кол-ва задач по статусу, в отрисовке графика последние значения как раз это и показывали
         stata = [a[-1], b[-1], c[-1]]
 
         return render(request, 'TODO/statistic.html', {'stata': stata,'data': data})
@@ -216,7 +169,7 @@ def statistic(request):
         return HttpResponseRedirect('/')
 
 
-
+#регистрация прользователя и логирование
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -231,6 +184,7 @@ def signup(request):
         form = SignUpForm()
     return render(request, 'TODO/signup.html', {'form': form})
 
+# выход
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect( '/')
