@@ -1,34 +1,14 @@
+
 <!DOCTYPE html>
-{% load staticfiles %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-md-3">
-                <a href="/">Главная</a>
-            </div>
-            <div class="col-md-3">
-                <a href="/change">Изменить</a>
-            </div>
-            <div class="col-md-3">
-                <a href="/statistic">Статистика</a>
-            </div>
-            <div class="col-md-3">
-                {% if user.get_username %}
-                    {{ user.get_username }}  <a href="/logout">X</a>
-                {% endif %}
-            </div>
-        </div>
-    </div>
+{% extends "menu.html" %}
 
+{% block content %}
     <div class="container">
         <div class="row">
             <div class="col-lg-5">
@@ -50,6 +30,7 @@
             </div>
         </div>
     </div>
+{% endblock %}
 
 </body>
 </html>

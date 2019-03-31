@@ -8,3 +8,5 @@ db.sqlite3
 /static
 .DS_Store
 *.png
+TODO/data.csv
+TODO/graph_try.py
